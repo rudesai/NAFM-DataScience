@@ -15,12 +15,12 @@ def data_from_RS(query, want_csv_file = False, csv_file_name=None):
     return data 
 
 
-def create_quote_comma_text():
+def create_quote_comma_text(string):
     '''
     This function is created so that simple space separated texts can be converted to quotes-comma text so that they can be used   as filters in SQL or any other usage.
 
     It requires no parameters, just input your text data which may be Email Addresses, offerIDs or any else. 
     '''
-    raw_data=input('Input your data which is space separated: ')
-    texts = raw_data.split()
+    #raw_data=input('Input your data which is space separated: ')
+    texts = string.split()
     return texts
