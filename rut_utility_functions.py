@@ -22,6 +22,5 @@ def create_quote_comma_text():
     It requires no parameters, just input your text data which may be Email Addresses, offerIDs or any else. 
     '''
     raw_data=input('Input your data which is space separated: ')
-    print('\n')
     texts = raw_data.split()
     return texts
