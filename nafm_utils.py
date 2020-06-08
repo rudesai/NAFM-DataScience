@@ -11,6 +11,7 @@ def data_from_RS(query, want_csv_file = False, csv_file_name=None):
     '''
     data = ds.query_RS(query)
     if want_csv_file is True:
+        csv_file_name=csv_file_name+'.csv'
         data.to_csv(csv_file_name)
     return data 
 
