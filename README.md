@@ -1,3 +1,3 @@
-# Rut_Utility_functions
+# NAFM-DataScience
 
-NAFM Data Science utility functions. 
+NAFM Data Science repository. Contains Utility functions, data cleaning functions and predictive models.  
