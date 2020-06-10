@@ -41,11 +41,15 @@ def create_quote_comma_text(csv_output=False, csv_name='quotes_comma'):
         else:
             cleaned_texts.append(text)
 
-    ## adding quotes and comma to a cleaned list        
     final_text_list=[]
     for text in cleaned_texts:
-        text="'"+text+"'"+","
-        final_text_list.append(text)
+        ## if the item is the last item in the list then don't add the final comma
+        if text == cleaned_texts[-1]:
+            text="'"+text+"'"
+            final_text_list.append(text)
+        else:
+            text="'"+text+"'"+","
+            final_text_list.append(text)
     
     ## return the final list as a csv for easy use if the user wants it
     if csv_output is True:
