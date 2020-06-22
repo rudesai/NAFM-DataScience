@@ -10,7 +10,7 @@ import datetime as dt
 class lead_reporting_persona:
     
     ## CREATING TABLE
-    def create_table(self):
+    def create_table(self, start_year=2019):
         query='''
                select distinct "eloqua persona"
                from na_field_marketing.prod_nafm_mt
@@ -27,7 +27,6 @@ class lead_reporting_persona:
 
         ## CREATING YEAR LIST 
         year_list=[]
-        start_year=2019
         curr_year=dt.datetime.today().year
         for year in range(start_year,curr_year+1):
             year_list.append(year)
@@ -39,7 +38,7 @@ class lead_reporting_persona:
                     query='''
                             create table na_field_marketing.temp_leads_{}_{} as (
                             select   distinct lead_id 
-                            from na_field_marketing.src_leads_sfdc l
+                            from na_field_marketing.src_leads_global_sfdc l
                             join 
                             (
                             select distinct "lead contact id"
@@ -60,7 +59,7 @@ class lead_reporting_persona:
     
     ### CALCULATIONS 
     
-    def calculations(self):
+    def calculations(self,start_year=2019):
         query='''
                select distinct "eloqua persona"
                from na_field_marketing.prod_nafm_mt
@@ -76,11 +75,14 @@ class lead_reporting_persona:
 
         ## CREATING YEAR LIST 
         year_list=[]
-        start_year=2019
         curr_year=dt.datetime.today().year
         for year in range(start_year,curr_year+1):
             year_list.append(year)
         
+        ## CREATING A BLANK DATAFRAME WHICH WILL STORE ALL THE RESULTS FROM THE BELOW CALCULATED DATAFRAMES
+        grand_master_df=pd.DataFrame()
+        
+        ## ACTUAL CALCULATIONS PER EACH PERSONA AND PER EACH YEAR HAPPENS BELOW. 
         for persona in personas:     
             for year in year_list:
                 ### Print the Persona and the Year the data is about
@@ -97,8 +99,16 @@ class lead_reporting_persona:
                 on l.lead_id = t.lead_id
                 ;
                     '''.format(persona,year)
-                df=ds.query_RS(query)
-                print('Total number of leads: {}'.format(df['leads'][0]))
+                master_df=ds.query_RS(query)
+                
+                ## ATTACHING THE METADATA OF THE CALCULATION
+                master_df['Persona']=persona
+                master_df['Year']=year
+                master_df['Stage']='Total Leads'
+                
+                ## APPENDING THE RECENT ABOVE CALCULATION TO THE GRAND MASTER DATAFRAME
+                grand_master_df=grand_master_df.append(master_df)
+                print('Total number of leads: {}'.format(master_df['leads'][0]))
                 
                 ### CALCULATION FOR MAL, SAL, SQL
 
@@ -114,6 +124,14 @@ class lead_reporting_persona:
                         ;
                     '''.format(persona,year,lead_stage)
                     df=ds.query_RS(query)
+                    
+                    ## ATTACHING THE METADATA OF THE CALCULATION
+                    df['Persona']=persona
+                    df['Year']=year
+                    df['Stage']=lead_stage
+                    
+                    ## APPENDING THE RECENT ABOVE CALCULATION TO THE GRAND MASTER DATAFRAME
+                    grand_master_df=grand_master_df.append(df)
                     print('{} Leads: {}'.format(lead_stage,df['leads'][0])) 
                     
                 ### CALCULATION FOR CONVERTED LEADS
@@ -121,17 +139,19 @@ class lead_reporting_persona:
                 query='''
                         select count (distinct t.lead_id) as leads
                         from na_field_marketing.temp_leads_{}_{} t 
-                        join na_field_marketing.src_leads_sfdc s on s.lead_id = t.lead_id
+                        join na_field_marketing.src_leads_global_sfdc s on s.lead_id = t.lead_id
                         where s.is_converted is true;
                     '''.format(persona,year)
                 df=ds.query_RS(query)
+                
+                ## ATTACHING THE METADATA OF THE CALCULATION
+                df['Persona']=persona
+                df['Year']=year
+                df['Stage']='Converted Leads'
+                
+                ## APPENDING THE RECENT ABOVE CALCULATION TO THE GRAND MASTER DATAFRAME
+                grand_master_df=grand_master_df.append(df)
 
                 print('Total number of Converted Leads: {}'.format(df['leads'][0]))
-            print('\n')
-
-
-
-    
-    
-
-
+        print('\n')
+        return grand_master_df
