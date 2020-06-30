@@ -41,7 +41,7 @@ def create_quote_comma_text(spaced_values='',values_have_space=False,csv_output=
                 cleaned_texts.append(text)       
         if csv_output==False:
             for text in cleaned_texts:
-                print("'{}',".format(text.replace('_',' ')))
+                print("'{}',".format(text.replace('_',' ')),end=' ')
         else:
             final_text_list=[]
             for text in cleaned_texts:
@@ -73,7 +73,7 @@ def create_quote_comma_text(spaced_values='',values_have_space=False,csv_output=
                 cleaned_texts.append(text)
 
         if csv_output==False:
-            print (cleaned_texts)
+            print (cleaned_texts, end=' ')
         else:
             final_text_list=[]
             for text in cleaned_texts:
