@@ -64,7 +64,7 @@ class lead_reporting_persona:
         '''
         query='''
                 CREATE TABLE na_field_marketing.persona_leads_analysis as(
-                select distinct c.persona, l.lead_id,email, is_converted, l.converted_date, o.opportunity_id,o.opportunity_amount,o.opportunity_forecast_category, h.lead_stage_to, h.rejection_reason, h.comments, l.lead_date_created 
+                select distinct c.persona, l.lead_id,email, is_converted, l.converted_date, o.opportunity_id,o.opportunity_amount,o.opportunity_forecast_category,o.opportunity_create_date, o.opportunity_close_date, h.lead_stage_to, h.rejection_reason, h.comments, l.lead_date_created 
                 from na_field_marketing.src_leads_global_sfdc l 
                 join na_field_marketing.na_eloqua_cncts_wo_cls c  on lower(l.email)=lower(c.c_emailaddress)   
                 join na_field_marketing.src_lmh_sfdc h on h.lead_id=l.lead_id
