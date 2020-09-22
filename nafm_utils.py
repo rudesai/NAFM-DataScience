@@ -28,7 +28,7 @@ def create_quote_comma_text(spaced_values='',values_have_space=False,csv_output=
                 
     csv_name: This parameter will be used only if csv_output is True.
               Default CSV name is 'quotes_comma'. User can input other name as desired
-THIS IS A comment from domino
+THIS is a demo line from domino
     '''
     if values_have_space==True:
         cleaned_string=spaced_values.replace(' ','_')
